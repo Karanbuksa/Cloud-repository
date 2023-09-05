@@ -1,0 +1,5 @@
+      databaseChangeLog:
+        - include:
+            file: migration/data/data1.sql
+            relativeToChangeLogFile: true
+            splitStatement: true
