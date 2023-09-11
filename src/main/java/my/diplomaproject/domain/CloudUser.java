@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
-@Entity
+@Entity(name = "cloud_users")
 public class CloudUser {
 
     @Id

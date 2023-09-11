@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<CloudUser, Long> {
 
-    public CloudUser findUserByLogin(String login);
+    CloudUser findUserByLogin(String login);
 
 }
