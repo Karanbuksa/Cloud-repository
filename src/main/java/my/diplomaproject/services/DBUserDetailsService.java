@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -24,13 +26,13 @@ public class DBUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        CloudUser cloudUser = userRepository.findUserByLogin(username);
-        if (cloudUser == null) {
+        Optional<CloudUser> cloudUser = userRepository.findUserByLogin(username);
+        if (cloudUser.isEmpty()) {
             throw new UserNotFoundException("");
         }
         return User.builder()
-                .username(cloudUser.getLogin())
-                .password(passwordEncoder.encode(cloudUser.getPassword()))
+                .username(cloudUser.get().getLogin())
+                .password(passwordEncoder.encode(cloudUser.get().getPassword()))
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.io.IOException;
 
 public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    private final AuthenticationManager authenticationManager;
+
+    public JsonUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    @Override
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
+    }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if (MediaType.APPLICATION_JSON_VALUE.equals(request.getContentType())) {
@@ -24,7 +36,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
                 String password = jsonNode.get("password").asText();
                 UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(login, password);
                 setDetails(request, authRequest);
-                return this.getAuthenticationManager().authenticate(authRequest);
+                return authenticationManager.authenticate(authRequest);
             } catch (IOException e) {
                 throw new AuthenticationServiceException("Failed to parse JSON authentication request", e);
             }
